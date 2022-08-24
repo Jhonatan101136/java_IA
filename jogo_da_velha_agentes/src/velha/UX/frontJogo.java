@@ -15,134 +15,65 @@ import javax.swing.SwingUtilities;
 import Interface.velha.jogoService;
 import game.ia.Velha_IA;
 
-/**
- * Classe que implementa um painel Swing com o tabuleiro do Jogo da Velha.
- */
 public class frontJogo extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 *  Largura do tabuleiro. 
-	 */
 	private static final int largura = 400;
 
-	/**
-	 *  Altura do tabuleiro. 
-	 */
 	private static final int altura = largura;
 
-	/**
-	 *  Largura de uma posição do tabuleiro 
-	 */
 	private static final int X_3 = largura / 3;
 
-	/**
-	 *  Altura de uma posicao do tabuleiro 
-	 */
 	private static final int Y_3 = altura / 3;
 
-	/**
-	 *  Largura da linha que desenha o tabuleiro, em pixels 
-	 */
 	private static final float largura_row_tabuleiro = 4.0f;
 
-	/**
-	 *  Cor do tabuleiro 
-	 */
-	private static final Paint cor_tabuleiro = Color.BLACK;
+	private static final Paint cor_tabuleiro = Color.BLUE;
 
-	/**
-	 *  Largura da linha que marca a jogada vencedora. 
-	 */
-	private static final float linha_vencedora = 10.0f;
+	private static final float linha_vencedora = 13.5f;
 
-	/**
-	 *  Cor da linha que marca a jogada vencedora.
-	 */
-	private static final Paint cor_linha_vencedora = Color.BLACK;
+	private static final Paint cor_linha_vencedora = Color.green;
 
-	/**
-	 *  Largura da linha que desenha o X ou O de uma jogada 
-	 */
 	private static final float largura_linha_player = 8.0f;
 
-	/**
-	 *  Cor do jogador X 
-	 */
-	private static final Paint cor_playerx = Color.RED;
+	private static final Paint cor_player_x = Color.RED;
 
-	/**
-	 *  Cor do jogador O 
-	 */
-	private static final Paint cor_playero = Color.BLUE;
+	private static final Paint cor_player_o = Color.BLUE;
 
-	/**
-	 *  Espaços entre a borda da posicao do tabuleiro e o X ou O 
-	 */
 	private static final int espaco_entre_player = largura / 25;
 
-	/**
-	 *  Coordenada X do inicio do tabuleiro 
-	 */
-	private int x_inicio = 0;
-	
+	private int x_inicio = 1;
 
-	/**
-	 *  Coordenada Y do inicio do tabuleiro 
-	 */
 	private int y_inicio = 0;
 
-	/**
-	 *  Coordenada X do fim do tabuleiro 
-	 */
 	private int x_finish = x_inicio + largura;
-	
 
-	/**
-	 *  Coordenada Y do fim do tabuleiro 
-	 */
 	private int y_finish = y_inicio + altura;
 
-	/**
-	 * Armazena um conjunto de coordenadas que representam cada posicao no
-	 * tabuleiro.
-	 */
 	private Point posicoesTabuleiro[][] = new Point[9][2];
 
-	/** 
-	 * Lógica do jogo. 
-	 */
-	private Velha_IA velha_IA = null;
+	private Velha_IA velhaIA = null;
 
-	/** 
-	 * Serviço do jogo. 
-	 */
 	private jogoService jogo_service_velha = null;
 
-	/**
-	 * Construtor da classe.
-	 */
 	public frontJogo(Velha_IA velhaIA, jogoService service) {
 
-		this.velha_IA = velha_IA;
+		this.velhaIA = velhaIA;
 		this.jogo_service_velha = service;
 
 		calcularCoordenadasDasPosicoes();
 
 		addMouseListener(new MouseAdapter() {
-			
-			/**
-			 * Evento chamada quando é clicado na tela do jogo.
-			 */
+
 			public void mousePressed(MouseEvent evento) {
 				if (velhaIA.isFimDeJogo() || !JogoMonitor.game_startado) {
 					return;
 				}
-				
+
 				int posicao = getPosicao(evento.getX(), evento.getY());
 				if (posicao >= 0) {
-					jogo_service_velha.playerFezUmaJogada (posicao);
+					jogo_service_velha.playerFezUmaJogada(posicao);
 					repaint();
 
 					SwingUtilities.invokeLater(new Runnable() {
@@ -167,9 +98,6 @@ public class frontJogo extends JPanel {
 		});
 	}
 
-	/**
-	 *  Resenha a tela do jogo
-	 */
 	@Override
 	public void paintComponent(final Graphics graphics) {
 		super.paintComponent(graphics);
@@ -182,9 +110,6 @@ public class frontJogo extends JPanel {
 		desenharJogadaVencedora(graphics2D);
 	}
 
-	/**
-	 * Calcula as coordenadas das posições do tabuleiro.
-	 */
 	private void calcularCoordenadasDasPosicoes() {
 		x_inicio = (getSize().width - largura) / 2;
 		y_inicio = (getSize().height - altura) / 2;
@@ -219,30 +144,22 @@ public class frontJogo extends JPanel {
 		posicoesTabuleiro[8][1] = new Point(x_finish, y_finish);
 	}
 
-	/**
-	 * Método que retorna uma posicao no tabuleiro, a partir das coordenadas de tela (x,y).
-	 */
 	private int getPosicao(final int posicaoX, final int posicaoY) {
-		
+
 		for (int posicao = 0; posicao < posicoesTabuleiro.length; posicao++) {
 
 			final Point posicaoInicial = posicoesTabuleiro[posicao][0];
 			final Point posicaoFinal = posicoesTabuleiro[posicao][1];
 
-			if (posicaoX > posicaoInicial.x 
-					&& posicaoX < posicaoFinal.x 
-					&& posicaoY > posicaoInicial.y 
+			if (posicaoX > posicaoInicial.x && posicaoX < posicaoFinal.x && posicaoY > posicaoInicial.y
 					&& posicaoY < posicaoFinal.y) {
 				return posicao;
 			}
 		}
-		
+
 		return -1;
 	}
 
-	/**
-	 * Desenha o tabuleiro na tela.
-	 */
 	private void desenharTabuleiro(final Graphics2D graphics2D) {
 
 		graphics2D.setStroke(new BasicStroke(largura_row_tabuleiro));
@@ -255,9 +172,6 @@ public class frontJogo extends JPanel {
 		graphics2D.drawLine(x_finish - X_3, y_inicio, x_finish - X_3, y_finish);
 	}
 
-	/**
-	 * Desenha as jogadas na tela.
-	 */
 	private void desenharJogadas(final Graphics2D graphics2D) {
 
 		graphics2D.setStroke(new BasicStroke(largura_linha_player));
@@ -272,33 +186,24 @@ public class frontJogo extends JPanel {
 			final int posicaoY1 = posicaoInicial.y + espaco_entre_player;
 			final int posicaoY2 = posicaoFinal.y - espaco_entre_player;
 
-			if (velha_IA.getPosicao(posicao) == Velha_IA.player_x) {
+			if (velhaIA.getPosicao(posicao) == Velha_IA.player_x) {
 
-				/**
-				 * Desenha o 'X' na tela.  
-				 */
-				graphics2D.setPaint(cor_playerx);
+				graphics2D.setPaint(cor_player_x);
 				graphics2D.drawLine(posicaoX1, posicaoY1, posicaoX2, posicaoY2);
 				graphics2D.drawLine(posicaoX1, posicaoY2, posicaoX2, posicaoY1);
 
-			} else if (velha_IA.getPosicao(posicao) == Velha_IA.player_o) {
+			} else if (velhaIA.getPosicao(posicao) == Velha_IA.player_o) {
 
-				/**
-				 * Desenha o 'O' na tela.  
-				 */
-				graphics2D.setPaint(cor_playero);
+				graphics2D.setPaint(cor_player_o);
 				graphics2D.drawOval(posicaoX1, posicaoY1, posicaoX2 - posicaoX1, posicaoY2 - posicaoY1);
 
 			}
 		}
 	}
 
-	/**
-	 * Método que desenha uma linha sobre a jogada vencedora.
-	 */
 	private void desenharJogadaVencedora(final Graphics2D grphics2D) {
 
-		int jogadaVencedora[] = velha_IA.getPosicoesGanhadoras();
+		int jogadaVencedora[] = velhaIA.getPosicoesGanhadoras();
 
 		if (jogadaVencedora == null || jogadaVencedora.length < 3) {
 			return;

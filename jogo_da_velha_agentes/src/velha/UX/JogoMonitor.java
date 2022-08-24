@@ -1,11 +1,5 @@
 package velha.UX;
 
-
-
-
-
-
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -24,44 +18,23 @@ import Interface.velha.jogoService;
 import Interface.velha.jogoServiceLogc;
 import game.ia.Velha_IA;
 
-/**
- * Classe responsavel por montar a tela do jogo.
- */
 public class JogoMonitor implements ActionListener {
 
 	private JFrame monitor;
 
-	/**
-	 *  Painel onde ficará o jogo 
-	 */
 	private frontJogo frontJogoVelha;
 
-	/**
-	 *  Painel de Opções do jogo 
-	 */
 	private JPanel opcoesJogo;
 	private JButton iniciaPartida;
 	private JComboBox<String> listaDificudades;
-	
-	/**
-	 *  Painel que mostra a situação do jogo 
-	 */
+
 	private JPanel informacao;
 	private JLabel situacaoJogo;
 
-	/** 
-	 * Serviço do jogo.
-	 */
 	private jogoService jogoServiceVelha;
-	
-	/**
-	 * Mostra se o jogo está iniciado ou não.
-	 */
+
 	public static boolean game_startado;
-	
-	/**
-	 * Construtor da classe.
-	 */
+
 	public JogoMonitor(Velha_IA velhatIA, jogoService service) {
 
 		jogoServiceVelha = service;
@@ -70,12 +43,11 @@ public class JogoMonitor implements ActionListener {
 		monitor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		monitor.setLayout(new BorderLayout(10, 10));
 		monitor.setResizable(false);
-		
-		
+
 		criaPainelDeOpcoes();
 		criaPainelDeInformacoes();
 
-		 opcoesJogo = new frontJogo(velhatIA, service);
+		frontJogoVelha = new frontJogo(velhatIA, service);
 
 		monitor.add(opcoesJogo, BorderLayout.NORTH);
 		monitor.add(frontJogoVelha, BorderLayout.CENTER);
@@ -87,34 +59,22 @@ public class JogoMonitor implements ActionListener {
 		monitor.setLocationRelativeTo(null);
 	}
 
-	/** 
-	 * Redesenha o painel do jogo. 
-	 */
 	public void CriaPainelJogo() {
 		frontJogoVelha.repaint();
 	}
 
-	/**
-	 * Mostra a situação do jogo.
-	 */
 	public void setSituacaoJogo(String info) {
 		situacaoJogo.setText(info);
 	}
 
-	/**
-	 *  Método chamada quando um botão é chamado
-	 */
 	@Override
-	public void actionPerformed (ActionEvent evento) {
+	public void actionPerformed(ActionEvent evento) {
 
 		if (evento.getSource() == iniciaPartida) {
 			jogoServiceVelha.startPartida(listaDificudades.getSelectedIndex());
 		}
 	}
 
-	/** 
-	 * Cria o painel de opções do jogo. 
-	 */
 	private void criaPainelDeOpcoes() {
 
 		opcoesJogo = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
@@ -123,18 +83,15 @@ public class JogoMonitor implements ActionListener {
 		iniciaPartida = new JButton("Iniciar partida");
 		iniciaPartida.addActionListener(this);
 		opcoesJogo.add(iniciaPartida);
-		
-		final String[] dificudades = {"Básico", "Intermediário", "Avançado"};
+
+		final String[] dificudades = { "Básico", "Intermediário", "Avançado" };
 		listaDificudades = new JComboBox<String>(dificudades);
 		listaDificudades.setSelectedIndex(0);
 		listaDificudades.addActionListener(this);
 		opcoesJogo.add(listaDificudades);
-		
+
 	}
 
-	/** 
-	 * Cria o painel de infomações do jogo. 
-	 */
 	private void criaPainelDeInformacoes() {
 
 		informacao = new JPanel(new FlowLayout());
@@ -143,14 +100,9 @@ public class JogoMonitor implements ActionListener {
 		situacaoJogo.setFont(new Font(null, Font.BOLD, 14));
 		informacao.add(situacaoJogo);
 	}
-	
-	/**
-	 * Método que inicia a aplicação.
-	 */
+
 	public static void main(String[] args) {
 		new jogoServiceLogc();
 	}
 
-	
 }
-
